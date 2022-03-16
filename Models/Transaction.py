@@ -75,7 +75,7 @@ class LightTransaction():
             tx.timestamp= [creation_time,receive_time]
 
             tx.id= random.randrange(100000000000)
-            tx.sender = random.choice (p.NODES).id
+            tx.sender = random.choice (p.USERS).id
             tx.to= random.choice (p.NODES).id
             tx.size= random.expovariate(1/p.Tsize)
 
@@ -118,6 +118,15 @@ class LightTransaction():
             LightTransaction.pending_transactions[i] = new_class_pool.copy()
         return transactions, size
 
+        # Transaction propogation & preparing pending lists for miners
+        def transaction_prop(tx):
+            # Fill each pending list. This is for transaction propogation
+            for i in p.NODES:
+                t= tx
+                t.timestamp[1] = t.timestamp[1] + Network.tx_prop_delay() # transaction propogation delay in seconds
+                i.transactionsPool.append(t)
+
+
 class FullTransaction():
 
     def create_transactions():
@@ -131,7 +140,7 @@ class FullTransaction():
             creation_time= random.randint(0,p.simTime-1)
             receive_time= creation_time
             tx.timestamp= [creation_time,receive_time]
-            sender= random.choice (p.NODES)
+            sender= random.choice (p.USERS)
             tx.sender = sender.id
             tx.to= random.choice (p.NODES).id
             tx.size= random.expovariate(1/p.Tsize)
@@ -144,10 +153,9 @@ class FullTransaction():
     def transaction_prop(tx):
         # Fill each pending list. This is for transaction propogation
         for i in p.NODES:
-            if tx.sender != i.id:
-                t= tx
-                t.timestamp[1] = t.timestamp[1] + Network.tx_prop_delay() # transaction propogation delay in seconds
-                i.transactionsPool.append(t)
+            t= tx
+            t.timestamp[1] = t.timestamp[1] + Network.tx_prop_delay() # transaction propogation delay in seconds
+            i.transactionsPool.append(t)
 
 
     def execute_transactions(miner,currentTime):

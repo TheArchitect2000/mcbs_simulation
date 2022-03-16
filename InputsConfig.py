@@ -90,8 +90,13 @@ class InputsConfig:
 
         i = 0  # counter to track pool objects
         j = 0  # counter to track node objects
+        u = 100 # user number for sim
         NODES = []  # list of node objects
         POOLS = []  # list of pool objects
+        USERS = [] # list of user objects
+
+        for w in range(u):
+            USERS.append(Node(id=i, hashPower=0))
 
         # function to assign nodes with decreasing hash power to pools
         def create_nodes(node_id, pool, hash_power, NODES=NODES):
