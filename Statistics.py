@@ -40,7 +40,7 @@ class Statistics:
 
             #MCBS data
             for t in b.transactions:
-                transactionRow = [t.id, t.timestamp[0], t.timestamp[1], t.sender, t.to, t.size, t.fee, t.level, t.miner.id, t.executionTime, t.executionTime - t.timestamp[0]]
+                transactionRow = [t.id, t.timestamp[0], t.timestamp[1], t.timestamp[2], t.timestamp[3], t.sender, t.to, t.size, t.fee, t.level, t.miner.id, t.executionTime, t.timestamp[3] - t.timestamp[2]]
                 Statistics.transactionResults+=[transactionRow]
 
         Statistics.staleRate= round(Statistics.staleBlocks/Statistics.totalBlocks * 100, 2)
@@ -125,7 +125,7 @@ class Statistics:
             df5.columns= ['Run ID', 'Block Depth', 'Block ID', 'Previous Block', 'Block Timestamp', 'Miner ID', '# transactions', 'Transaction Fee', 'Block Size']
 
         df6 = pd.DataFrame(Statistics.transactionResults)
-        df6.columns=['tr ID', 'Creation Time', 'Received Time', 'Sender ID', 'Receiver ID', 'Tx Size', 'Tx fee', 'Pool level', 'Miner ID', 'Execution Time', 'Wait Time']
+        df6.columns=['tr ID', 'Creation Time', 'Received Time', 'Propagation Time', 'Pick Up Time', 'Sender ID', 'Receiver ID', 'Tx Size', 'Tx fee', 'Pool level', 'Miner ID', 'Execution Time', 'Queue Waiting Time']
 
         writer = pd.ExcelWriter(fname, engine='xlsxwriter')
         df1.to_excel(writer, sheet_name='InputConfig', startcol=-1)

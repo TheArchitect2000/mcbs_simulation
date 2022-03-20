@@ -1,7 +1,7 @@
 import random
 from Models.Bitcoin.Pool import Pool
 from Models.Bitcoin.Node import Node
-
+from Models.Bitcoin.User import User
 class InputsConfig:
 
     """ Seclect the model to be simulated.
@@ -60,8 +60,12 @@ class InputsConfig:
         Tfee = 0.00029  # The average transaction fee
         Tsize = 0.000546  # The average transaction size  in MB
 
-        ''' Node Parameters '''
-        Nn = 3  # the total number of nodes in the network
+        ''' User Parameters '''
+        uLatency = 0.2
+
+        ''' Node hardware Parameters '''
+        propTxDelay = 0.000690847927
+
 
         pool_types = {
             'F2Pool': ('PPS+', 2),
@@ -96,7 +100,8 @@ class InputsConfig:
         USERS = [] # list of user objects
 
         for w in range(u):
-            USERS.append(Node(id=i, hashPower=0))
+            latency = random.expovariate(1 / uLatency)
+            USERS.append(User(id=w, networkLatency=latency))
 
         # function to assign nodes with decreasing hash power to pools
         def create_nodes(node_id, pool, hash_power, NODES=NODES):

@@ -22,16 +22,20 @@ class Transaction(object):
     """
 
     def __init__(self,
-	 id=0,
-	 timestamp=0 or [],
-	 sender=0,
-         to=0,
-         value=0,
-	 size=0.000546,
-         fee=0,
-         level=0,
-         miner=0,
-         executionTime=0):
+	    id=0,
+	    timestamp=0 or [],
+	    sender=0,
+        to=0,
+        value=0,
+	    size=0.000546,
+        fee=0,
+        level=0,
+        miner=0,
+        creationTime=0,
+        receiveTime=0,
+        txPropTime=0,
+        pickUpTime=0,
+        executionTime=0):
 
         self.id = id
         self.timestamp = timestamp
@@ -42,6 +46,10 @@ class Transaction(object):
         self.fee= fee
         self.level=level
         self.miner=miner
+        self.creationTime=creationTime,
+        self.receiveTime=receiveTime,
+        self.txPropTime=txPropTime,
+        self.pickUpTime=pickUpTime,
         self.executionTime=executionTime
 
 
@@ -50,33 +58,36 @@ class LightTransaction():
     pending_transactions=[[],[],[],[],[]] # shared pool of pending transactions
 
 
-    def create_transactions(previousTime, currentTime):
+    def create_transactions(pickUpTime, prevTime):
 
         #LightTransaction.pending_transactions=[]
         pool= LightTransaction.pending_transactions
-        mean = math.ceil(currentTime - previousTime)
+        mean = math.ceil(pickUpTime - prevTime)
         # little trick to generate genesis transactions
         if mean == 0:
             mean = 1
 
-        if previousTime == 0 and currentTime == 0:
+        if pickUpTime == 0 and prevTime == 0:
             mean = random.randint(0, p.Binterval) * p.Tn
 
         Psize= round(random.expovariate(1 / (p.Tn * mean)))
-        print(currentTime, previousTime, Psize)
+        print(prevTime, pickUpTime, Psize)
 
         for i in range(Psize):
             # assign values for transactions' attributes. You can ignore some attributes if not of an interest, and the default values will then be used
             tx= Transaction()
 
             # for MCBS sim
-            creation_time= random.uniform(previousTime,currentTime)
-            receive_time= creation_time
-            tx.timestamp= [creation_time,receive_time]
+            senderInfo = random.choice (p.USERS)
+            tx.sender = senderInfo.id
+            tx.to= random.choice (p.NODES).id
+            tx.pickUpTime= pickUpTime
+            tx.txPropTime = random.uniform(prevTime, pickUpTime) - random.expovariate(1/p.propTxDelay)
+            tx.receive_time= tx.txPropTime - - random.expovariate(1/p.propTxDelay)
+            tx.creation_time = tx.receive_time - random.expovariate(1 / senderInfo.networkLatency)
+            tx.timestamp= [tx.creation_time, tx.receive_time, tx.txPropTime, tx.pickUpTime]
 
             tx.id= random.randrange(100000000000)
-            tx.sender = random.choice (p.USERS).id
-            tx.to= random.choice (p.NODES).id
             tx.size= random.expovariate(1/p.Tsize)
 
             tx.level=random.randrange(5)
@@ -117,15 +128,6 @@ class LightTransaction():
 
             LightTransaction.pending_transactions[i] = new_class_pool.copy()
         return transactions, size
-
-        # Transaction propogation & preparing pending lists for miners
-        def transaction_prop(tx):
-            # Fill each pending list. This is for transaction propogation
-            for i in p.NODES:
-                t= tx
-                t.timestamp[1] = t.timestamp[1] + Network.tx_prop_delay() # transaction propogation delay in seconds
-                i.transactionsPool.append(t)
-
 
 class FullTransaction():
 

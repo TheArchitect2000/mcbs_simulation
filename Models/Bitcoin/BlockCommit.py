@@ -34,13 +34,18 @@ class BlockCommit(BaseBlockCommit):
                     event.block.fee += tx.fee
                 event.block.usedgas= blockSize  # FIXME
 
-            previousTime = 0
+            pickUpTime = 0
+            prevBlockTime = 0
             if blockPrev != -1:
-                previousTime = miner.blockchain[-1].timestamp
+                pickUpTime = miner.blockchain[-1].timestamp
+
+                if blockPrev != 0:
+                    prevBlockTime = miner.blockchain[-2].timestamp
+
 
             miner.blockchain.append(event.block)
 
-            if p.hasTrans and p.Ttechnique == "Light":LT.create_transactions(previousTime, eventTime) # generate transactions
+            if p.hasTrans and p.Ttechnique == "Light":LT.create_transactions(pickUpTime, prevBlockTime) # generate transactions
 
             BlockCommit.propagate_block(event.block)
             BlockCommit.generate_next_block(miner,eventTime)# Start mining or working on the next block
