@@ -32,28 +32,28 @@ class Incentives:
 
             windows = {}
             cumulative_shares = {}
-            # calculating sum of shares for PPLNS and PPS+ pools since block window or the join time
-            for pool in p.POOLS:
-                if pool.strategy not in ['PPLNS', 'PPS+']:
-                    continue
-
-                N = pool.block_window
-                # extract timestamp of earliest block within window
-                if i > N:
-                    window_timestamp = c.global_chain[i-N-1].timestamp
-                else:
-                    window_timestamp = 0
-
-                shares = 0
-                for pool_node in pool.nodes:
-                    # select the latest timestamp from the pool join time and block windows
-                    latest_window_time = max(pool_node.join_time, window_timestamp)
-                    # calculate shares contributed since the latest time
-                    shares += (current_time - latest_window_time) * pool_node.hashPower
-
-                # save window timestamp and total shares for later use
-                windows[pool] = window_timestamp
-                cumulative_shares[pool] = shares
+#             # calculating sum of shares for PPLNS and PPS+ pools since block window or the join time
+#             for pool in p.POOLS:
+#                 if pool.strategy not in ['PPLNS', 'PPS+']:
+#                     continue
+#
+#                 N = pool.block_window
+#                 # extract timestamp of earliest block within window
+#                 if i > N:
+#                     window_timestamp = c.global_chain[i-N-1].timestamp
+#                 else:
+#                     window_timestamp = 0
+#
+#                 shares = 0
+#                 for pool_node in pool.nodes:
+#                     # select the latest timestamp from the pool join time and block windows
+#                     latest_window_time = max(pool_node.join_time, window_timestamp)
+#                     # calculate shares contributed since the latest time
+#                     shares += (current_time - latest_window_time) * pool_node.hashPower
+#
+#                 # save window timestamp and total shares for later use
+#                 windows[pool] = window_timestamp
+#                 cumulative_shares[pool] = shares
 
 
             for m in p.NODES:
@@ -167,20 +167,20 @@ class Incentives:
             total_transactions += len(bc.transactions)
             S = round(total_transactions/(i+1), 2)
 
-            avg_payout = 0
-            pool_payout = {}
+#             avg_payout = 0
+#             pool_payout = {}
             # calculate expected payout for each pool
-            for pool in p.POOLS:
-                # print('pool', pool.id, [node.id for node in pool.nodes])
-                if pool.nodes and pool.strategy in ['PPS', 'PPLNS']:
-                    mu = ((100 - pool.fee_rate)/100) * ((p.Breward + p.Tfee * S)/len(pool.nodes)) * pool.hash_power/100
-                    pool_payout[pool] = mu
-                    avg_payout += mu
+#             for pool in p.POOLS:
+#                 # print('pool', pool.id, [node.id for node in pool.nodes])
+#                 if pool.nodes and pool.strategy in ['PPS', 'PPLNS']:
+#                     mu = ((100 - pool.fee_rate)/100) * ((p.Breward + p.Tfee * S)/len(pool.nodes)) * pool.hash_power/100
+#                     pool_payout[pool] = mu
+#                     avg_payout += mu
 
-            if len(pool_payout) == 0:
-                continue
-
-            avg_payout /= len(pool_payout)
+#             if len(pool_payout) == 0:
+#                 continue
+#
+#             avg_payout /= len(pool_payout)
             # print([(pool.id, pool.strategy, pay) for pool, pay in pool_payout.items()])
 
             # implementation of pool hopping

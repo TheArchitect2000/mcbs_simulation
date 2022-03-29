@@ -67,25 +67,25 @@ class InputsConfig:
         propTxDelay = 0.000690847927
 
 
-        pool_types = {
-            'F2Pool': ('PPS+', 2),
-            'Poolin': ('PPS+', 2),
-            'BTC.com': ('FPPS', 2),
-            'AntPool': ('PPLNS', 2),
-            'Huobi': ('PPLNS', 1),
-            'Binance Pool': ('PPS', 3),
-            'ViaBTC': ('PPS', 4),
-            '1THash': ('FPPS', 4),
-            # 'OKExPool':,
-            # 'SlushPool': '',
-            # 'BTC Guild': 'PPLNS',
-            # 'GHash.IO':,
-            # 'BitFury':,
-            # 'BTCC': 'PPS'
-        }
+#         pool_types = {
+#             'F2Pool': ('PPS+', 2),
+#             'Poolin': ('PPS+', 2),
+#             'BTC.com': ('FPPS', 2),
+#             'AntPool': ('PPLNS', 2),
+#             'Huobi': ('PPLNS', 1),
+#             'Binance Pool': ('PPS', 3),
+#             'ViaBTC': ('PPS', 4),
+#             '1THash': ('FPPS', 4),
+#             # 'OKExPool':,
+#             # 'SlushPool': '',
+#             # 'BTC Guild': 'PPLNS',
+#             # 'GHash.IO':,
+#             # 'BitFury':,
+#             # 'BTCC': 'PPS'
+#         }
 
         ''' Simulation Parameters '''
-        simTime = 1 * 24 * 60 * 60  # the simulation length (in seconds)
+        simTime = 2 * 24 * 60 * 60  # the simulation length (in seconds)
         Runs = 1  # Number of simulation runs
 
         # choose which sim to run
@@ -93,10 +93,9 @@ class InputsConfig:
         # sim_type = 'hopping'
 
         i = 0  # counter to track pool objects
-        j = 0  # counter to track node objects
-        u = 100 # user number for sim
+        j = 500  # miner number for sim
+        u = 500 # user number for sim
         NODES = []  # list of node objects
-        POOLS = []  # list of pool objects
         USERS = [] # list of user objects
 
         for w in range(u):
@@ -104,109 +103,109 @@ class InputsConfig:
             USERS.append(User(id=w, networkLatency=latency))
 
         # function to assign nodes with decreasing hash power to pools
-        def create_nodes(node_id, pool, hash_power, NODES=NODES):
-            n = random.randint(7, 10)
-            for _ in range(n):
-                hash_power /= 2
-                NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power))
-                node_id += 1
-            return node_id
+#         def create_nodes(node_id, pool, hash_power, NODES=NODES):
+#             n = random.randint(7, 10)
+#             for _ in range(n):
+#                 hash_power /= 2
+#                 NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power))
+#                 node_id += 1
+#             return node_id
 
         # function to create miner nodes for the selfish sim
-        def create_selfish_nodes(node_id, pool, hash_power, NODES=NODES):
-            n = random.randint(7, 10)
-            for _ in range(n):
-                hash_power /= 2
-                r = random.random()
-                # each hopping strategy (honest, best, strategy-based, random) has a 25% chance of being adopted by a node
-                if r < 0.25:
-                    NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='best'))
-                elif r < 0.5:
-                    NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='strategy based'))
-                elif r < 0.75:
-                    NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='random'))
-                else:
-                    NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power))
-                node_id += 1
-            return node_id
+#         def create_selfish_nodes(node_id, pool, hash_power, NODES=NODES):
+#             n = random.randint(7, 10)
+#             for _ in range(n):
+#                 hash_power /= 2
+#                 r = random.random()
+#                 # each hopping strategy (honest, best, strategy-based, random) has a 25% chance of being adopted by a node
+#                 if r < 0.25:
+#                     NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='best'))
+#                 elif r < 0.5:
+#                     NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='strategy based'))
+#                 elif r < 0.75:
+#                     NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power, node_type='selfish', node_strategy='random'))
+#                 else:
+#                     NODES.append(Node(id=node_id, pool=pool, hashPower=hash_power))
+#                 node_id += 1
+#             return node_id
 
         # initialising base fee rates
-        base_rate = {'PPS': 2.5, 'FPPS': 2.5, 'PPS+': 2.5, 'PPLNS': 0}
+#         base_rate = {'PPS': 2.5, 'FPPS': 2.5, 'PPS+': 2.5, 'PPLNS': 0}
 
         if sim_type == 'honest':
-            hopping = False
+#             hopping = False
             # for each kind of strategy instantiate node and pool objects
-            for pool_type in ['SOLO', 'PPS', 'FPPS', 'PPLNS', 'PPS+']:
+#             for pool_type in ['SOLO', 'PPS', 'FPPS', 'PPLNS', 'PPS+']:
 
-                if pool_type == 'SOLO':
-                    hp = 12
-                    # 10 solo miners with monotonically decreasing hash rates
-                    for _ in range(10):
-                        hp /= 2
-                        NODES.append(Node(id=j, hashPower=hp))
-                        j += 1
-                else:
-                    rate = base_rate[pool_type]
+#             if pool_type == 'SOLO':
+            hp = random.sample(range(0, 10000), j)
+            hpSum = sum(hp)
 
-                    # 4 pools for PPS and FPPS strategies each
-                    if pool_type in ['PPS', 'FPPS']:
-                        for f in range(4):
-                            hp = 4
-                            pool = Pool(_id=i, strategy=pool_type, fee_rate=rate)
-                            POOLS.append(pool)
-                            j = create_nodes(j, pool, hp)
-                            i += 1
-                            rate += 0.5
-
-
-                    else:
-                        for w in range(4):
-                            if rate in [1, 3]:
-                                # for PPS+ and PPLNS pools we vary block window as well
-                                for bw in [6, 8, 10, 12]:
-                                    hp = 4
-                                    pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=bw)
-                                    POOLS.append(pool)
-                                    j = create_nodes(j, pool, hp)
-                                    i += 1
-                                rate += 0.5
-
-                            else:
-                                hp = 4
-                                pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=8)
-                                POOLS.append(pool)
-                                j = create_nodes(j, pool, hp)
-                                i += 1
-                                rate += 0.5
-
-        else:
-            hopping = True
-            # hopping sim only considers PPS and PPLNS
-            for pool_type in ['PPS', 'PPLNS']:
-
-                # using the same base fee rates as the honest sim
-                rate = base_rate[pool_type]
-
-                # create PPS pools of varying fee rate
-                if pool_type in ['PPS']:
-                    for f in range(4):
-                        hp = 5
-                        pool = Pool(_id=i, strategy=pool_type, fee_rate=rate)
-                        POOLS.append(pool)
-                        j = create_selfish_nodes(j, pool, hp)
-                        i += 1
-                        rate += 0.5
-
-                else:
-                    # in case of PPLNS, we vary the block window as well
-                    for w in range(4):
-                        for bw in [6, 8, 10, 12]:
-                            hp = 5
-                            pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=bw)
-                            POOLS.append(pool)
-                            j = create_selfish_nodes(j, pool, hp)
-                            i += 1
-                        rate += 0.5
+            # 100 solo miners with monotonically decreasing hash rates
+            for nodeId in range(j):
+                NODES.append(Node(id=nodeId, hashPower=hp[nodeId] / hpSum * 100))
+#                 else:
+#                     rate = base_rate[pool_type]
+#
+#                     # 4 pools for PPS and FPPS strategies each
+#                     if pool_type in ['PPS', 'FPPS']:
+#                         for f in range(4):
+#                             hp = 4
+#                             pool = Pool(_id=i, strategy=pool_type, fee_rate=rate)
+#                             POOLS.append(pool)
+#                             j = create_nodes(j, pool, hp)
+#                             i += 1
+#                             rate += 0.5
+#
+#
+#                     else:
+#                         for w in range(4):
+#                             if rate in [1, 3]:
+#                                 # for PPS+ and PPLNS pools we vary block window as well
+#                                 for bw in [6, 8, 10, 12]:
+#                                     hp = 4
+#                                     pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=bw)
+#                                     POOLS.append(pool)
+#                                     j = create_nodes(j, pool, hp)
+#                                     i += 1
+#                                 rate += 0.5
+#
+#                             else:
+#                                 hp = 4
+#                                 pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=8)
+#                                 POOLS.append(pool)
+#                                 j = create_nodes(j, pool, hp)
+#                                 i += 1
+#                                 rate += 0.5
+#
+#         else:
+#             hopping = True
+#             # hopping sim only considers PPS and PPLNS
+#             for pool_type in ['PPS', 'PPLNS']:
+#
+#                 # using the same base fee rates as the honest sim
+#                 rate = base_rate[pool_type]
+#
+#                 # create PPS pools of varying fee rate
+#                 if pool_type in ['PPS']:
+#                     for f in range(4):
+#                         hp = 5
+#                         pool = Pool(_id=i, strategy=pool_type, fee_rate=rate)
+#                         POOLS.append(pool)
+#                         j = create_selfish_nodes(j, pool, hp)
+#                         i += 1
+#                         rate += 0.5
+#
+#                 else:
+#                     # in case of PPLNS, we vary the block window as well
+#                     for w in range(4):
+#                         for bw in [6, 8, 10, 12]:
+#                             hp = 5
+#                             pool = Pool(_id=i, strategy=pool_type, fee_rate=rate, block_window=bw)
+#                             POOLS.append(pool)
+#                             j = create_selfish_nodes(j, pool, hp)
+#                             i += 1
+#                         rate += 0.5
 
 
         # sim_type = 'baseline'

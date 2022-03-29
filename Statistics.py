@@ -18,14 +18,14 @@ class Statistics:
     blocksResults=[]
     transactionResults=[]
     profits = [[] for y in range(p.Runs * len(p.NODES))]  # number of miners * number of runs
-    pool_profits = []
+#     pool_profits = []
     chain=[]
 
     def calculate(run_id):
         Statistics.global_chain(run_id)  # print the global chain
         Statistics.blocks_results(run_id)  # calcuate and print block statistics e.g., # of accepted blocks and stale rate etc
         Statistics.profit_results(run_id)  # calculate and distribute the revenue or reward for miners
-        Statistics.pool_results(run_id)
+#         Statistics.pool_results(run_id)
 
     ########################################################### Calculate block statistics Results ###########################################################################################
     def blocks_results(run_id):
@@ -55,16 +55,16 @@ class Statistics:
         for m in p.NODES:
             i = run_id * len(p.NODES) + m.id
             Statistics.profits[i] = [run_id, m.id, m.node_type]
-            if p.hopping:
-                if m.pool:
-                    Statistics.profits[i] += [m.node_strategy, m.pool_list, m.blocks_list, m.reward_list, m.balance_list]
-                else:
-                    Statistics.profits[i] += [m.node_strategy, None, None]
-            else:
-                if m.pool:
-                    Statistics.profits[i] += [m.pool.id, m.pool.strategy, m.pool.fee_rate]
-                else:
-                    Statistics.profits[i] += [None, 'SOLO', None]
+#             if p.hopping:
+#                 if m.pool:
+#                     Statistics.profits[i] += [m.node_strategy, m.pool_list, m.blocks_list, m.reward_list, m.balance_list]
+#                 else:
+#                     Statistics.profits[i] += [m.node_strategy, None, None]
+#             else:
+#                 if m.pool:
+#                     Statistics.profits[i] += [m.pool.id, m.pool.strategy, m.pool.fee_rate]
+#                 else:
+            Statistics.profits[i] += [None, 'SOLO', None]
             if p.model== 0:
                 Statistics.profits[i].append("NA")
             else:
@@ -82,10 +82,10 @@ class Statistics:
             Statistics.profits[i].append(m.balance * p.Bprice)
 
 
-    def pool_results(run_id):
-        for pool in p.POOLS:
-            Statistics.pool_profits.append([run_id, pool.id, pool.strategy, pool.fee_rate, pool.block_window, pool.hash_power, pool.blocks,
-            round(pool.blocks/Statistics.mainBlocks * 100, 2), pool.block_fee, pool.balance, pool.balance * p.Bprice])
+#     def pool_results(run_id):
+#         for pool in p.POOLS:
+#             Statistics.pool_profits.append([run_id, pool.id, pool.strategy, pool.fee_rate, pool.block_window, pool.hash_power, pool.blocks,
+#             round(pool.blocks/Statistics.mainBlocks * 100, 2), pool.block_fee, pool.balance, pool.balance * p.Bprice])
 
 
     ########################################################### prepare the global chain  ###########################################################################################
@@ -109,14 +109,14 @@ class Statistics:
         df2.columns= ['Run ID', 'Total Blocks', 'Main Blocks', 'Uncle blocks', 'Uncle Rate', 'Stale Blocks', 'Stale Rate', '# transactions']
 
         df3 = pd.DataFrame(Statistics.profits)
-        if p.hopping:
-            df3.columns = ['Run ID', 'Miner ID', 'Miner Type', 'Hopping Strategy', 'Pool IDs', 'Blocks per pool', 'Reward per pool', 'Balance per pool', '% Hash Power','# Mined Blocks', '% of main blocks', '# Uncle Blocks','% of uncles', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
-        else:
-            df3.columns = ['Run ID', 'Miner ID', 'Miner Type', 'Pool Id', 'Pool Strategy', 'Pool Fee', '% Hash Power','# Mined Blocks', '% of main blocks', '# Uncle Blocks','% of uncles', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
+#         if p.hopping:
+#             df3.columns = ['Run ID', 'Miner ID', 'Miner Type', 'Hopping Strategy', 'Pool IDs', 'Blocks per pool', 'Reward per pool', 'Balance per pool', '% Hash Power','# Mined Blocks', '% of main blocks', '# Uncle Blocks','% of uncles', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
+#         else:
+        df3.columns = ['Run ID', 'Miner ID', 'Miner Type', 'Pool Id', 'Pool Strategy', 'Pool Fee', '% Hash Power','# Mined Blocks', '% of main blocks', '# Uncle Blocks','% of uncles', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
 
-        df4 = pd.DataFrame(Statistics.pool_profits)
-        if len(df4) > 0:
-            df4.columns = ['Run ID', 'Pool ID', 'Pool Strategy', '% Fee Rate', 'Block Window', '% Hash Power', '# Mined Blocks', '% of main blocks', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
+#         df4 = pd.DataFrame(Statistics.pool_profits)
+#         if len(df4) > 0:
+#             df4.columns = ['Run ID', 'Pool ID', 'Pool Strategy', '% Fee Rate', 'Block Window', '% Hash Power', '# Mined Blocks', '% of main blocks', 'Transaction Fee', 'Profit (in crypto)', 'Profit in $']
 
         df5 = pd.DataFrame(Statistics.chain)
         if p.model==2:
@@ -131,7 +131,7 @@ class Statistics:
         df1.to_excel(writer, sheet_name='InputConfig', startcol=-1)
         df2.to_excel(writer, sheet_name='SimOutput', startcol=-1)
         df3.to_excel(writer, sheet_name='Profit', startcol=-1)
-        df4.to_excel(writer, sheet_name='Pools', startcol=-1)
+#         df4.to_excel(writer, sheet_name='Pools', startcol=-1)
         df5.to_excel(writer, sheet_name='Chain', startcol=-1)
         df6.to_excel(writer, sheet_name='Transaction', startcol=-1)
         writer.save()

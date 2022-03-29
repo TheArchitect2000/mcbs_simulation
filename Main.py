@@ -25,7 +25,7 @@ elif p.model == 1:
     from Models.Bitcoin.Consensus import Consensus
     from Models.Transaction import LightTransaction as LT, FullTransaction as FT
     from Models.Bitcoin.Node import Node
-    from Models.Bitcoin.Pool import Pool
+#     from Models.Bitcoin.Pool import Pool
     from Models.Incentives import Incentives
 
 elif p.model == 0:
@@ -56,9 +56,9 @@ def main():
                 print(node.id, end=', ')
         print()
 
-        print('Pools:')
-        for pool in p.POOLS:
-            print(' -', pool.id, pool.strategy, 'Fee Rate:', pool.fee_rate, 'Nodes:', [node.id for node in pool.nodes], 'Hash power:', pool.hash_power)
+#         print('Pools:')
+#         for pool in p.POOLS:
+#             print(' -', pool.id, pool.strategy, 'Fee Rate:', pool.fee_rate, 'Nodes:', [node.id for node in pool.nodes], 'Hash power:', pool.hash_power)
         print('Total hash power:', hash_power, '\n')
 
         clock = 0  # set clock to 0 at the start of the simulation
@@ -99,7 +99,7 @@ def main():
             ########## reset all global variable before the next run #############
             Statistics.reset()  # reset all variables used to calculate the results
             Node.resetState()  # reset all the states (blockchains) for all nodes in the network
-            Pool.resetState()  # reset all pools in the network
+#             Pool.resetState()  # reset all pools in the network
 
     # set file name for results
     fname = f"{p.sim_type}_{int(p.simTime/(24*60*60))}days_{datetime.now()}.xlsx".replace(':', '_')
